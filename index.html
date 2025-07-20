@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>iPad Soundboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .btn {
+      display: block;
+      width: 80%;
+      max-width: 300px;
+      margin: 10px auto;
+      padding: 15px;
+      font-size: 18px;
+      background: #0099cc;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+
+    @media (orientation: landscape) {
+      h1 {
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>iPad 1 Soundboard</h1>
+  <div id="soundboard">Loading...</div>
+
+  <script>
+    fetch('sounds.json')
+      .then(response => response.json())
+      .then(sounds => {
+        const container = document.getElementById('soundboard');
+        container.innerHTML = '';
+        sounds.forEach((filename, index) => {
+          const name = filename.split('.')[0]; // get file name without extension
+          const audioId = 'audio' + index;
+
+          const btn = document.createElement('button');
+          btn.className = 'btn';
+          btn.textContent = name;
+          btn.onclick = () => document.getElementById(audioId).play();
+
+          const audio = document.createElement('audio');
+          audio.id = audioId;
+          audio.src = 'sounds/' + filename;
+
+          container.appendChild(btn);
+          container.appendChild(audio);
+        });
+      })
+      .catch(error => {
+        document.getElementById('soundboard').innerText = 'Failed to load sound list.';
+        console.error('Error loading sounds.json:', error);
+      });
+  </script>
+</body>
+</html>
